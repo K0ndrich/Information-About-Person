@@ -1,38 +1,39 @@
-class Point:
-    MAX_COORD = 100
-    MIN_COORD = 0
+from string import ascii_letters
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+class Person:
+    
+    S_RUS="йцукенгшщзхъфывапролджэячсмитьбю- "
+    S_RUS_UPPER=S_RUS.upper()
 
-    def set_coord(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, fio, old, passport, weigth):
+        
+        self.verify(fio)
 
-    def __getattribute__(self, item):
+        self.__fio = fio.split()
+        self.__old = old
+        self.__passport = passport
+        self.__weight = weigth
+    
+    @classmethod
+    def verify(cls,fio):
+        
+        if type(fio)!=str:
+            raise TypeError("ФИО должно быть строкой")
+        
+        f=fio.split()
+        
+        if len(f)!=3:
+            raise TypeError("Неверный формат записи")
+        
+        letters=ascii_letters+cls.S_RUS+cls.S_RUS_UPPER
+        
+        for s in f:
+            
+            if len(s)<1:
+                raise TypeError("в ФИО должен хотябы одни символ")
+            
+            if len(s.strip(letters))!=0:
+                raise TypeError("в ФИО содержатся недопустмые символы")
 
-        return object.__getattribute__(self, item)
+a=Person('Кондратенко- Максим Олександрович',20,30,40)
 
-    def __setattr__(self, key, value):
-        if key == "z":
-            raise AttributeError(
-                "Недопустимое имя атрибута")
-        else:
-            print("__SETATTR__")
-        # object.__setattr__(self, key, value)
-        self.__dict__[key] = value
-
-    def __getattr__(self, item):
-        print("__GETATTRIBUTE")
-        return False
-
-    def __delattr__(self, item):
-        print("__delattr__")
-        object.__delattr__(self, item)
-
-
-a = Point(5, 3)
-
-del a.x
-print(a.__dict__)
